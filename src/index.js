@@ -28,6 +28,35 @@ function luhnValid(digits) {
   return digits.length >= 13 && sum % 10 === 0;
 }
 
+function ipv4Valid(text) {
+  const parts = text.split('.');
+  return (
+    parts.length === 4 &&
+    parts.every((part) => {
+      const n = Number(part);
+      return n >= 0 && n <= 255 && String(n) === part;
+    })
+  );
+}
+
+// Each group is 1-4 hex digits; eight groups, or fewer with exactly one `::`.
+// A dotted IPv4 tail counts as two groups. A bare `::` is not redacted, since
+// in prose it is far more often punctuation than the unspecified address.
+function ipv6Valid(text) {
+  if (text === '::') return false;
+  let address = text;
+  if (address.includes('.')) {
+    const cut = address.lastIndexOf(':') + 1;
+    if (!ipv4Valid(address.slice(cut))) return false;
+    address = address.slice(0, cut) + '0:0';
+  }
+  const halves = address.split('::');
+  if (halves.length > 2) return false;
+  const groups = halves.flatMap((half) => (half === '' ? [] : half.split(':')));
+  if (!groups.every((group) => /^[0-9A-Fa-f]{1,4}$/.test(group))) return false;
+  return halves.length === 2 ? groups.length <= 7 : groups.length === 8;
+}
+
 const PATTERNS = [
   {
     name: 'urlPassword',
@@ -91,14 +120,20 @@ const PATTERNS = [
     validate: (match) => match.replace(/\D/g, '').length >= 7,
   },
   {
+    name: 'ipv6',
+    label: '[IP]',
+    // Full (2001:0db8:…:7334), compressed (2001:db8::1, ::1, fe80::) and
+    // IPv4-mapped (::ffff:192.0.2.1) forms. Runs before ipv4 so a mapped
+    // address is replaced whole. The look-arounds keep it from starting or
+    // ending inside a word, so `std::vector` and `Foo::Bar` are not candidates.
+    regex: /(?<![\w:.])(?:[0-9A-Fa-f]{0,4}:){2,8}(?:(?:\d{1,3}\.){3}\d{1,3}|[0-9A-Fa-f]{1,4})?(?![\w:]|\.\d)/g,
+    validate: ipv6Valid,
+  },
+  {
     name: 'ipv4',
     label: '[IP]',
     regex: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g,
-    validate: (match) =>
-      match.split('.').every((part) => {
-        const n = Number(part);
-        return n >= 0 && n <= 255 && String(n) === part;
-      }),
+    validate: ipv4Valid,
   },
   {
     name: 'genericApiKey',

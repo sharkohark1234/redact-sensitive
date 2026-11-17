@@ -89,6 +89,7 @@ findSensitive('mail a@b.com, card 4111111111111111');
 | Private key blocks | `-----BEGIN PRIVATE KEY-----` → `[PRIVATE_KEY]` |
 | SSN | `123-45-6789` → `[SSN]` |
 | IPv4 | `203.0.113.42` → `[IP]` |
+| IPv6 | `2001:db8::1`, `::1`, `::ffff:192.0.2.1` → `[IP]` |
 | URL passwords | `https://user:pass@host` → `https://user:[PASSWORD]@host` |
 | `key = value` secrets | `api_key = abc123…` → `api_key = [API_KEY]` |
 
