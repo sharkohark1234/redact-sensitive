@@ -1027,3 +1027,36 @@ test('mailchimpKey honours pattern filters and labels', () => {
   assert.equal(redact(key, { labels: { mailchimpKey: '[MC]' } }), '[MC]');
   assert.equal(redact(key, { keepLabels: false, replacement: '***' }), '***');
 });
+
+// --- Issue #54: PyPI API tokens (pypi-...) ---
+
+// Obvious placeholder assembled at runtime so no token-shaped literal is
+// committed: a long base64url-style body after the `pypi-` prefix.
+const pypiToken = () => `pypi-${'A'.repeat(24)}${'b'.repeat(24)}${'9'.repeat(24)}`;
+
+test('redacts a PyPI API token as a token', () => {
+  const token = pypiToken();
+  assert.equal(redact(`token ${token}`), 'token [TOKEN]');
+  const found = findSensitive(`token ${token}`);
+  assert.ok(found.some((f) => f.type === 'pypiToken' && f.value === token));
+});
+
+test('short pypi- strings stay untouched', () => {
+  for (const text of [
+    'pypi-',
+    'pypi-abc123',
+    `pypi-${'a'.repeat(20)}`,
+    'see pypi- in the docs',
+  ]) {
+    assert.equal(redact(text), text);
+    assert.deepEqual(findSensitive(text, { only: ['pypiToken'] }), []);
+  }
+});
+
+test('pypiToken honours pattern filters and labels', () => {
+  const token = pypiToken();
+  assert.equal(redact(token, { except: ['pypiToken'] }), token);
+  assert.equal(redact(token, { only: ['pypiToken'] }), '[TOKEN]');
+  assert.equal(redact(token, { labels: { pypiToken: '[PYPI]' } }), '[PYPI]');
+  assert.equal(redact(token, { keepLabels: false, replacement: '***' }), '***');
+});
