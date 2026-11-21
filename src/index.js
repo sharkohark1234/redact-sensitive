@@ -296,6 +296,16 @@ const PATTERNS = [
     regex: /\b(?:(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/g,
   },
   {
+    name: 'pypiToken',
+    label: '[TOKEN]',
+    // PyPI API tokens: the literal `pypi-` prefix followed by a long
+    // base64url body (letters, digits, '_' and '-'). A 40-character minimum
+    // keeps short placeholder text such as `pypi-abc` untouched. The
+    // lookahead (rather than \b) also handles bodies ending in a non-word
+    // character like '-'.
+    regex: /\bpypi-[A-Za-z0-9_-]{40,}(?![A-Za-z0-9_-])/g,
+  },
+  {
     name: 'slackToken',
     label: '[TOKEN]',
     // Slack tokens use several prefixes: xoxb/xoxa/xoxp/xoxr/xoxs (classic)

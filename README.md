@@ -117,7 +117,7 @@ findSensitive('mail a@b.com, card 4111111111111111', { only: ['email'] });
 | Phone | `+1 555-123-4567`, `+91 98765 43210` → `[PHONE]` |
 | Credit card | Luhn-validated, 13–19 digits → `[CARD]` |
 | IBAN | Country length and checksum validated, `DE89 3704 0044 0532 0130 00` → `[IBAN]` |
-| API keys | GitHub `ghp_…` / `github_pat_…`, OpenAI `sk-…` / `sk-proj-…` / `sk-svcacct-…`, Stripe `sk_live_…` / `sk_test_…` / `rk_live_…` / `rk_test_…`, AWS `AKIA…` / `ASIA…`, Mailchimp `<32 hex>-us14`, Slack `xoxb-…` / `xoxe-…` → `[TOKEN]` / `[API_KEY]` |
+| API keys | GitHub `ghp_…` / `github_pat_…`, PyPI `pypi-…`, OpenAI `sk-…` / `sk-proj-…` / `sk-svcacct-…`, Stripe `sk_live_…` / `sk_test_…` / `rk_live_…` / `rk_test_…`, AWS `AKIA…` / `ASIA…`, Mailchimp `<32 hex>-us14`, Slack `xoxb-…` / `xoxe-…` → `[TOKEN]` / `[API_KEY]` |
 | JWT | `eyJ…` → `[TOKEN]` |
 | Slack incoming webhooks | `https://hooks.slack.com/services/…` (also `hooks.slack-gov.com`) → `[WEBHOOK]` |
 | Private key blocks | `-----BEGIN PRIVATE KEY-----` (also `ENCRYPTED`, `RSA`, `EC`, … and truncated blocks with no `END` line) → `[PRIVATE_KEY]` |
