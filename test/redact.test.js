@@ -693,6 +693,49 @@ test('redacts OpenAI service account keys (sk-svcacct-) as API keys', () => {
   assert.ok(found.some((f) => f.type === 'openaiKey'));
 });
 
+// --- Issue #74: Anthropic Claude API keys ---
+
+test('redacts Anthropic Claude API keys as API keys', () => {
+  const body = 'A'.repeat(93) + 'AA';
+  const api03 = `sk-ant-api03-${body}`;
+  const admin01 = `sk-ant-admin01-${body}`;
+  assert.equal(redact(`key ${api03}`), 'key [API_KEY]');
+  assert.equal(redact(`key ${admin01}`), 'key [API_KEY]');
+  assert.deepEqual(findSensitive(`key ${api03}`, { only: ['anthropicApiKey'] }), [
+    { type: 'anthropicApiKey', value: api03, index: 4 },
+  ]);
+});
+
+test('Anthropic API key near misses stay untouched', () => {
+  const body = 'A'.repeat(93) + 'AA';
+  const inputs = [
+    'sk-ant-api03-short',
+    `sk-ant-api03-${'A'.repeat(10)}`,
+    `sk-ant-api03-${'A'.repeat(92)}AA`,
+    `sk-ant-api03-${'A'.repeat(94)}AA`,
+    `sk-ant-api03-${'A'.repeat(93)}AB`,
+    `sk-ant-api03-${'A'.repeat(93)}A!`,
+    `sk-ant-admin01-${'A'.repeat(92)}AA`,
+    `sk-ant-api03-${body}extra`,
+    'plain text with sk-ant-api03- inside',
+  ];
+  for (const input of inputs) {
+    assert.equal(redact(input), input);
+    assert.deepEqual(findSensitive(input, { only: ['anthropicApiKey'] }), []);
+  }
+});
+
+test('Anthropic API key embedded after hyphen or underscore stays untouched', () => {
+  const body = 'A'.repeat(93) + 'AA';
+  const api03 = `sk-ant-api03-${body}`;
+  const hyphenPrefixed = `prefix-${api03}`;
+  const underscorePrefixed = `prefix_${api03}`;
+  assert.equal(redact(hyphenPrefixed), hyphenPrefixed);
+  assert.equal(redact(underscorePrefixed), underscorePrefixed);
+  assert.deepEqual(findSensitive(hyphenPrefixed, { only: ['anthropicApiKey'] }), []);
+  assert.deepEqual(findSensitive(underscorePrefixed, { only: ['anthropicApiKey'] }), []);
+});
+
 test('redacts Slack xoxe- tokens as tokens', () => {
   assert.equal(redact(`value xoxe-${body16()}`), 'value [TOKEN]');
   const found = findSensitive(`value xoxe-${body16()}`);

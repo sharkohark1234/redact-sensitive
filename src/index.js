@@ -339,6 +339,13 @@ const PATTERNS = [
     regex: /\bsk-(?:proj-|svcacct-)?[A-Za-z0-9]{20,}\b/g,
   },
   {
+    name: 'anthropicApiKey',
+    label: '[API_KEY]',
+    // Anthropic Claude API keys: sk-ant-api03- and sk-ant-admin01- followed by
+    // 93 base64url characters and the literal suffix AA (95 chars total body).
+    regex: /(?<![A-Za-z0-9_-])sk-ant-(?:api03|admin01)-[A-Za-z0-9_-]{93}AA(?![A-Za-z0-9_-])/g,
+  },
+  {
     name: 'stripeKey',
     label: '[API_KEY]',
     // Stripe secret keys: sk_live_... / sk_test_... plus restricted keys
