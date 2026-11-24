@@ -7,6 +7,9 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Anthropic API keys (`sk-ant-api03-…`, `sk-ant-admin01-…`) are now redacted
+  as `[API_KEY]`
+  ([#74](https://github.com/sharkohark1234/redact-sensitive/issues/74)).
 - Supabase access tokens (`sbp_`, `sbp_oauth_`, `sbp_v0_`) are now redacted
   as `[TOKEN]` ([#49](https://github.com/sharkohark1234/redact-sensitive/issues/49)).
 - DigitalOcean personal access, OAuth access and refresh tokens (`dop_v1_`,
