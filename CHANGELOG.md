@@ -7,6 +7,9 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Runtime compatibility note (`docs/compatibility.md`): verified under Node
+  (146 tests pass), Bun 1.4.4 (146 tests pass) and Deno 2.9.8
+  ([#58](https://github.com/sharkohark1234/redact-sensitive/issues/58)).
 - Anthropic API keys (`sk-ant-api03-…`, `sk-ant-admin01-…`) are now redacted
   as `[API_KEY]`
   ([#74](https://github.com/sharkohark1234/redact-sensitive/issues/74)).
@@ -97,6 +100,7 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `Authorization` headers, and `key = value` secrets.
 - `redact()`, `redactObject()` and `findSensitive()`, with `only` / `except` /
   `labels` / `custom` options and TypeScript types.
+
 
 
 
