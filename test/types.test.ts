@@ -6,9 +6,9 @@
 // runtime values, so a drift between src/index.js and src/index.d.ts fails
 // here. Run with `npm test` — Node strips the types natively, no build step.
 
-import { test } from 'node:test';
-import * as assert from 'node:assert/strict';
-import { redact, redactObject, findSensitive, PATTERNS, SENSITIVE_KEYS } from '../src/index.js';
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { redact, redactObject, findSensitive, PATTERNS, SENSITIVE_KEYS } = require('../src/index.js');
 import type { RedactOptions, SensitiveMatch, RedactPattern } from '../src/index.js';
 
 test('RedactOptions type: typed options redact as documented in the README', () => {
