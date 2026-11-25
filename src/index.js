@@ -325,6 +325,14 @@ const PATTERNS = [
     regex: /\bsbp_(?:oauth_|v0_)?[a-f0-9]{40}\b/g,
   },
   {
+    name: 'notionToken',
+    label: '[TOKEN]',
+    // Notion API tokens: current `ntn_` tokens and legacy `secret_`
+    // tokens, followed by a long run of alphanumeric characters. No
+    // exact length is pinned: Notion treats tokens as opaque strings.
+    regex: /\b(?:ntn_|secret_)[A-Za-z0-9]{40,}\b/g,
+  },
+  {
     name: 'slackToken',
     label: '[TOKEN]',
     // Slack tokens use several prefixes: xoxb/xoxa/xoxp/xoxr/xoxs (classic)

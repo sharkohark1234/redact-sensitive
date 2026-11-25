@@ -1262,3 +1262,66 @@ test('supabaseToken honours pattern filters and replacement labels', () => {
   ]);
   assert.deepEqual(findSensitive(token, { except: ['supabaseToken'] }), []);
 });
+
+// --- Issue #78: Notion API tokens (ntn_... / secret_...) ---
+
+// Placeholder bodies built at runtime so no token-shaped literal is
+// committed (secret scanners flag those): obvious repeated characters,
+// 40 or more long, like a real Notion token body.
+const notionBody = () => 'a'.repeat(43);
+const notionToken = (prefix = 'ntn_') => prefix + notionBody();
+
+test('redacts Notion API tokens with both prefixes as tokens', () => {
+  assert.equal(redact(`token ${notionToken('ntn_')}`), 'token [TOKEN]');
+  assert.equal(redact(`token ${notionToken('secret_')}`), 'token [TOKEN]');
+  assert.equal(
+    redact(`Authorization: Bearer ${notionToken('ntn_')}`),
+    'Authorization: Bearer [TOKEN]'
+  );
+  const found = findSensitive(`token ${notionToken('ntn_')}`);
+  assert.ok(found.some((f) => f.type === 'notionToken'));
+  assert.deepEqual(findSensitive(`key ${notionToken('secret_')}`, { only: ['notionToken'] }), [
+    { type: 'notionToken', value: notionToken('secret_'), index: 4 },
+  ]);
+});
+
+test('Notion token near misses stay untouched', () => {
+  const inputs = [
+    'ntn_',
+    'secret_',
+    'ntn_short',
+    'secret_short',
+    `ntn_${'a'.repeat(39)}`,
+    `secret_${'a'.repeat(39)}`,
+    'see ntn_ in the docs',
+    'see secret_ in the docs',
+  ];
+  for (const input of inputs) {
+    assert.equal(redact(input), input);
+    assert.deepEqual(findSensitive(input, { only: ['notionToken'] }), []);
+  }
+});
+
+test('Notion tokens do not swallow secret_access_key assignments', () => {
+  // `secret_access_key = <value>` is a genericApiKey assignment, not a
+  // bare Notion token: the word after `secret_` is too short and has an
+  // underscore in it, so the Notion pattern must not match it.
+  const value = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
+  assert.equal(redact(`secret_access_key = ${value}`), 'secret_access_key = [API_KEY]');
+  assert.equal(redact(`aws_secret_access_key = ${value}`), 'aws_secret_access_key = [API_KEY]');
+  assert.deepEqual(findSensitive(`secret_access_key = ${value}`, { only: ['notionToken'] }), []);
+});
+
+test('notionToken honours pattern filters and replacement labels', () => {
+  const token = notionToken();
+  assert.equal(redact(token, { only: ['notionToken'] }), '[TOKEN]');
+  assert.equal(redact(token, { except: ['notionToken'] }), token);
+  assert.equal(redact(token, { labels: { notionToken: '[NOTION]' } }), '[NOTION]');
+  assert.equal(redact(token, {
+    labels: { notionToken: '[NOTION]' }, keepLabels: false, replacement: '***',
+  }), '***');
+  assert.deepEqual(findSensitive(token, { only: ['notionToken'] }), [
+    { type: 'notionToken', value: token, index: 0 },
+  ]);
+  assert.deepEqual(findSensitive(token, { except: ['notionToken'] }), []);
+});
