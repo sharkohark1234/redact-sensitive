@@ -197,11 +197,12 @@ object has the same shape as the original.
 | Phone | `+1 555-123-4567`, `+91 98765 43210` → `[PHONE]` |
 | Credit card | Luhn-validated, 13–19 digits → `[CARD]` |
 | IBAN | Country length and checksum validated, `DE89 3704 0044 0532 0130 00` → `[IBAN]` |
-| API keys | GitHub `ghp_…` / `github_pat_…`, Hugging Face `hf_…`, OpenAI `sk-…` / `sk-proj-…` / `sk-svcacct-…`, Anthropic `sk-ant-api03-…` / `sk-ant-admin01-…`, Stripe `sk_live_…` / `sk_test_…` / `rk_live_…` / `rk_test_…`, AWS `AKIA…` / `ASIA…`, Mailchimp `<32 hex>-us14`, Slack `xoxb-…` / `xoxe-…` → `[TOKEN]` / `[API_KEY]` |
+| API keys | GitHub `ghp_…` / `github_pat_…`, Hugging Face `hf_…`, Figma `figd_…`, OpenAI `sk-…` / `sk-proj-…` / `sk-svcacct-…`, Anthropic `sk-ant-api03-…` / `sk-ant-admin01-…`, Stripe `sk_live_…` / `sk_test_…` / `rk_live_…` / `rk_test_…`, AWS `AKIA…` / `ASIA…`, Mailchimp `<32 hex>-us14`, Slack `xoxb-…` / `xoxe-…` → `[TOKEN]` / `[API_KEY]` |
 | JWT | `eyJ…` → `[TOKEN]` |
 | GitLab access tokens (`gitlabToken`) | `glpat-` + 20 or more base64url characters → `[TOKEN]` |
 | DigitalOcean tokens (`digitalOceanToken`) | `dop_v1_`, `doo_v1_` or `dor_v1_` + 64 hex characters → `[TOKEN]` |
 | Supabase access tokens (`supabaseToken`) | `sbp_`, `sbp_oauth_` or `sbp_v0_` + 40 lowercase hex characters → `[TOKEN]` |
+| Figma personal access tokens (`figmaToken`) | `figd_` + 40 or more alphanumeric characters → `[TOKEN]` |
 | Slack incoming webhooks | `https://hooks.slack.com/services/…` (also `hooks.slack-gov.com`) → `[WEBHOOK]` |
 | Private key blocks | `-----BEGIN PRIVATE KEY-----` (also `ENCRYPTED`, `RSA`, `EC`, … and truncated blocks with no `END` line) → `[PRIVATE_KEY]` |
 | SSN | `123-45-6789` → `[SSN]` |

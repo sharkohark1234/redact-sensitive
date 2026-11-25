@@ -318,6 +318,15 @@ const PATTERNS = [
     regex: /\bhf_[A-Za-z0-9]{34}\b/g,
   },
   {
+    name: 'figmaToken',
+    label: '[TOKEN]',
+    // Figma personal access tokens: the literal `figd_` prefix followed by
+    // a run of 40 or more alphanumeric characters. Figma publishes no exact
+    // length, so no upper bound is pinned; short placeholder strings such
+    // as `figd_...` stay untouched.
+    regex: /\bfigd_[A-Za-z0-9]{40,}\b/g,
+  },
+  {
     name: 'supabaseToken',
     label: '[TOKEN]',
     // The CLI accepts sbp_, sbp_oauth_ and sbp_v0_ followed by 40 lowercase
