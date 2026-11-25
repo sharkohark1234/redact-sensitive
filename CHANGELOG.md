@@ -69,6 +69,11 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Plain Deno import now works: `package.json` declares `"type": "commonjs"`,
+  so Deno 2.9.8 detects the CommonJS module and
+  `import { redact } from './src/index.js'` loads without the
+  `--unstable-detect-cjs` flag
+  ([#76](https://github.com/sharkohark1234/redact-sensitive/issues/76)).
 - A host that merely contains "sentry" inside another label
   (`notsentry.example.com`) is no longer misclassified as a Sentry DSN:
   "sentry" must now be a whole dot-separated host label, so the key falls
