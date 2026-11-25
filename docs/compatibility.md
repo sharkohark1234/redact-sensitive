@@ -1,7 +1,8 @@
 # Runtime compatibility
 
-Checked 2026-11-25 for issue #58. The package is CommonJS (`main: src/index.js`,
-no `"type"` field in `package.json`).
+Checked 2026-11-25 for issue #58, re-checked 2026-11-25 after the fix for
+issue #76. The package is CommonJS (`main: src/index.js`,
+`"type": "commonjs"` in `package.json`).
 
 ## Node (baseline)
 
@@ -25,13 +26,13 @@ no `"type"` field in `package.json`).
 - Version: Deno 2.9.8 (installed 2026-11-25 with the official installer,
   `curl -fsSL https://deno.land/install.sh | sh`, to `~/.deno/bin/deno`).
 - `require` load: works via `createRequire` from `node:module`.
-- `import` load **without extra flags: fails.**
-  `import { redact } from './src/index.js'` throws
-  `SyntaxError: The requested module ... does not provide an export named 'redact'`.
-  Deno treats `src/index.js` as ESM because `package.json` has no
-  `"type": "commonjs"`, so it never detects the CommonJS `module.exports`.
-- With the flag: `deno run --allow-read --unstable-detect-cjs <file>` — import
-  works and redaction works (email → `[EMAIL]`, token → `<redacted>`).
+- `import` load **without extra flags: works** (fixed by #76 — adding
+  `"type": "commonjs"` to `package.json`).
+  `import { redact } from './src/index.js'` then
+  `redact('Contact ana@example.com')` returns `Contact [EMAIL]`.
+  Verified 2026-11-25 with Deno 2.9.8; the same import failed before the
+  fix with `SyntaxError: The requested module ... does not provide an export
+  named 'redact'`.
 - Test suite: `deno test --allow-read --unstable-detect-cjs test/redact.test.js`
   → **141 passed, 0 failed.**
   `deno test --allow-read --unstable-detect-cjs --no-check test/` →
@@ -41,10 +42,10 @@ no `"type"` field in `package.json`).
   That is a test-environment quirk, not a package runtime problem — the same
   file passes with `--no-check`, and Node strips its types natively.
 
-## Known gap (for a follow-up issue, not fixed here)
+## Known gap (fixed by #76)
 
-- The package does not load under plain Deno with no flags: `package.json`
-  has no `"type": "commonjs"`, so Deno reads `src/index.js` as ESM and the
-  named exports are missing. Adding `"type": "commonjs"` (or shipping the
-  entry as `.cjs`) should make Deno detect the CommonJS module without the
-  `--unstable-detect-cjs` flag. Bun and Node are unaffected either way.
+- Plain Deno import used to fail because `package.json` had no `"type"`
+  field. Adding `"type": "commonjs"` fixed it (see the Deno section above);
+  the `--unstable-detect-cjs` flag is no longer needed. `test/types.test.ts`
+  now uses `require()` for its runtime imports (with `import type` kept for
+  the type checks) so `npm test` still passes with the `"type"` field set.
