@@ -1114,6 +1114,40 @@ test('huggingFaceToken honours pattern filters and labels', () => {
   assert.equal(redact(token, { keepLabels: false, replacement: '***' }), '***');
 });
 
+// --- Issue #79: Figma personal access tokens (figd_...) ---
+
+// Placeholder assembled at runtime so no token-shaped literal is
+// committed: `figd_` followed by a 40-character body.
+const figmaToken = () => `figd_${'a'.repeat(40)}`;
+
+test('redacts a Figma personal access token as a token', () => {
+  const token = figmaToken();
+  assert.equal(redact(`X-Figma-Token: ${token}`), 'X-Figma-Token: [TOKEN]');
+  assert.equal(redact(`token ${token}`), 'token [TOKEN]');
+  const found = findSensitive(`token ${token}`);
+  assert.ok(found.some((f) => f.type === 'figmaToken' && f.value === token));
+});
+
+test('short figd_ strings and near misses stay untouched', () => {
+  for (const text of [
+    'figd_short',
+    'figd_...',
+    `figd_${'a'.repeat(39)}`,
+    'see figd_ in the docs',
+  ]) {
+    assert.equal(redact(text), text);
+    assert.deepEqual(findSensitive(text, { only: ['figmaToken'] }), []);
+  }
+});
+
+test('figmaToken honours pattern filters and labels', () => {
+  const token = figmaToken();
+  assert.equal(redact(token, { except: ['figmaToken'] }), token);
+  assert.equal(redact(token, { only: ['figmaToken'] }), '[TOKEN]');
+  assert.equal(redact(token, { labels: { figmaToken: '[FIGMA]' } }), '[FIGMA]');
+  assert.equal(redact(token, { keepLabels: false, replacement: '***' }), '***');
+});
+
 // Synthetic token bodies only; no live credentials are used in these tests.
 test('redacts GitLab access tokens, including full base64url bodies', () => {
   const bodies = ['a'.repeat(20), 'Ab0_'.repeat(5), 'Ab0-'.repeat(5), 'Ab0_-'.repeat(8)];
