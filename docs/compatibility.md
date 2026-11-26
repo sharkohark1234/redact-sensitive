@@ -43,4 +43,4 @@ landed. The package is CommonJS (`main: src/index.js`,
   field. Adding `"type": "commonjs"` fixed it (see the Deno section above);
   the `--unstable-detect-cjs` flag is no longer needed. `test/types.test.mts`
   now uses ESM imports (it is `.mts` so it loads as ESM under both Node and
-  Deno) so `npm test` and `deno test --no-check test/` both pass.
+  Deno) so `npm test` and `deno test --allow-read --unstable-detect-cjs test/` both pass.
