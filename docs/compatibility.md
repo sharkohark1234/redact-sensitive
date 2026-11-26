@@ -1,14 +1,15 @@
 # Runtime compatibility
 
 Checked 2026-11-25 for issue #58, re-checked 2026-11-25 after the fix for
-issue #76. The package is CommonJS (`main: src/index.js`,
+issue #76, re-checked 2026-11-26 after the Notion and Figma token patterns
+landed. The package is CommonJS (`main: src/index.js`,
 `"type": "commonjs"` in `package.json`).
 
 ## Node (baseline)
 
 - Version: Node v24.22.1
 - Command: `npm test` (runs `node --test`)
-- Result: **146 passed, 0 failed.**
+- Result: **153 passed, 0 failed.**
 
 ## Bun
 
@@ -19,7 +20,7 @@ issue #76. The package is CommonJS (`main: src/index.js`,
 - Basic redaction: email → `[EMAIL]`; a token with an `sbp_` prefix →
   `<redacted>`; a card number → `[CARD]`.
   (Test values were placeholders / repeated filler characters, never real secrets.)
-- Test suite: `bun test test/` → **146 passed, 0 failed** (2 files).
+- Test suite: `bun test test/` → **153 passed, 0 failed** (2 files).
 
 ## Deno
 
@@ -34,10 +35,10 @@ issue #76. The package is CommonJS (`main: src/index.js`,
   fix with `SyntaxError: The requested module ... does not provide an export
   named 'redact'`.
 - Test suite: `deno test --allow-read --unstable-detect-cjs test/redact.test.js`
-  → **141 passed, 0 failed.**
+  → **148 passed, 0 failed.**
   `deno test --allow-read --unstable-detect-cjs --no-check test/` →
-  **146 passed, 0 failed.**
-- Note: `deno test` with type-checking on `test/types.test.ts` fails before
+  **153 passed, 0 failed.**
+- Note: `deno test` with type-checking on `test/types.test.mts` fails before
   running, because Deno cannot resolve `npm:@types/node` in this checkout.
   That is a test-environment quirk, not a package runtime problem — the same
   file passes with `--no-check`, and Node strips its types natively.
@@ -46,6 +47,6 @@ issue #76. The package is CommonJS (`main: src/index.js`,
 
 - Plain Deno import used to fail because `package.json` had no `"type"`
   field. Adding `"type": "commonjs"` fixed it (see the Deno section above);
-  the `--unstable-detect-cjs` flag is no longer needed. `test/types.test.ts`
-  now uses `require()` for its runtime imports (with `import type` kept for
-  the type checks) so `npm test` still passes with the `"type"` field set.
+  the `--unstable-detect-cjs` flag is no longer needed. `test/types.test.mts`
+  now uses ESM imports (it is `.mts` so it loads as ESM under both Node and
+  Deno) so `npm test` and `deno test --no-check test/` both pass.
