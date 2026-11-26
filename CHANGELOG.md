@@ -77,7 +77,8 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The TypeScript types test runs under Deno again: it moved from
   `test/types.test.ts` (CommonJS `require()`, which Deno cannot load from a
   `.ts` file) to `test/types.test.mts` with ESM imports, so `deno test
-  --no-check test/` passes 153/153 alongside `npm test` and `bun test`.
+  --allow-read --unstable-detect-cjs test/` passes 153/153 alongside
+  `npm test` and `bun test`.
 - Plain Deno import now works: `package.json` declares `"type": "commonjs"`,
   so Deno 2.9.8 detects the CommonJS module and
   `import { redact } from './src/index.js'` loads without the
