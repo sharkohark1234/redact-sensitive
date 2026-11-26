@@ -14,7 +14,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { redact, redactObject, findSensitive, PATTERNS, SENSITIVE_KEYS } from '../src/index.js';
-import type { RedactOptions, SensitiveMatch, RedactPattern } from '../src/index.js';
+import type { RedactOptions, SensitiveMatch, RedactPattern } from '../src/index.d.ts';
 
 test('RedactOptions type: typed options redact as documented in the README', () => {
   const options: RedactOptions = { only: ['email'] };

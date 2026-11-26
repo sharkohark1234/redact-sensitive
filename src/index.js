@@ -164,6 +164,7 @@ function redactCookieHeaderValue(headerValue, label) {
     .join(';');
 }
 
+/** @type {import('./index.d.ts').RedactPattern[]} */
 const PATTERNS = [
   {
     name: 'connectionString',
