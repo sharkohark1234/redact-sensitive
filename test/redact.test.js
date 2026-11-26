@@ -1359,3 +1359,20 @@ test('notionToken honours pattern filters and replacement labels', () => {
   ]);
   assert.deepEqual(findSensitive(token, { except: ['notionToken'] }), []);
 });
+
+test('redacts Shopify API access tokens and client secrets', () => {
+  const body = 'a'.repeat(32); // 32 lowercase hex characters
+  const shpat = `shpat_${body}`;
+  const shppa = `shppa_${body}`;
+  const shpca = `shpca_${body}`;
+  const shpss = `shpss_${body}`;
+
+  assert.equal(redact(`key ${shpat}`), 'key [TOKEN]');
+  assert.equal(redact(`key ${shppa}`), 'key [TOKEN]');
+  assert.equal(redact(`key ${shpca}`), 'key [TOKEN]');
+  assert.equal(redact(`key ${shpss}`), 'key [TOKEN]');
+
+  assert.deepEqual(findSensitive(`key ${shpat}`, { only: ['shopifyToken'] }), [
+    { type: 'shopifyToken', value: shpat, index: 4 },
+  ]);
+});
