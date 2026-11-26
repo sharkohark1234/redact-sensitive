@@ -34,14 +34,8 @@ landed. The package is CommonJS (`main: src/index.js`,
   Verified 2026-11-25 with Deno 2.9.8; the same import failed before the
   fix with `SyntaxError: The requested module ... does not provide an export
   named 'redact'`.
-- Test suite: `deno test --allow-read --unstable-detect-cjs test/redact.test.js`
-  → **148 passed, 0 failed.**
-  `deno test --allow-read --unstable-detect-cjs --no-check test/` →
+- - Test suite: `deno test --allow-read --unstable-detect-cjs test/` →
   **153 passed, 0 failed.**
-- Note: `deno test` with type-checking on `test/types.test.mts` fails before
-  running, because Deno cannot resolve `npm:@types/node` in this checkout.
-  That is a test-environment quirk, not a package runtime problem — the same
-  file passes with `--no-check`, and Node strips its types natively.
 
 ## Known gap (fixed by #76)
 

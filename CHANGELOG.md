@@ -4,6 +4,7 @@ All notable changes to redact-sensitive are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+- Fixed Deno testing environment to support native type-checking. The Deno test command is now simply `deno test --allow-read --unstable-detect-cjs test/` without the `--no-check` flag.
 
 ### Added
 
