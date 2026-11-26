@@ -7,6 +7,10 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Notion API tokens (`ntn_…`, `secret_…`) are now redacted as `[TOKEN]`
+  ([#78](https://github.com/sharkohark1234/redact-sensitive/issues/78)).
+- Figma personal access tokens (`figd_…`) are now redacted as `[TOKEN]`
+  ([#79](https://github.com/sharkohark1234/redact-sensitive/issues/79)).
 - Runtime compatibility note (`docs/compatibility.md`): verified under Node
   (146 tests pass), Bun 1.4.4 (146 tests pass) and Deno 2.9.8
   ([#58](https://github.com/sharkohark1234/redact-sensitive/issues/58)).
@@ -105,6 +109,7 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `Authorization` headers, and `key = value` secrets.
 - `redact()`, `redactObject()` and `findSensitive()`, with `only` / `except` /
   `labels` / `custom` options and TypeScript types.
+
 
 
 
