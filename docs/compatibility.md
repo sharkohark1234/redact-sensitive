@@ -2,14 +2,15 @@
 
 Checked 2026-11-25 for issue #58, re-checked 2026-11-25 after the fix for
 issue #76, re-checked 2026-11-26 after the Notion and Figma token patterns
-landed. The package is CommonJS (`main: src/index.js`,
+landed, re-checked 2026-11-27 after the npm access token work (#18) grew
+the suite to 156 tests, verified under Node and Bun. The package is CommonJS (`main: src/index.js`,
 `"type": "commonjs"` in `package.json`).
 
 ## Node (baseline)
 
 - Version: Node v24.22.1
 - Command: `npm test` (runs `node --test`)
-- Result: **153 passed, 0 failed.**
+- Result: **156 passed, 0 failed.**
 
 ## Bun
 
@@ -20,7 +21,7 @@ landed. The package is CommonJS (`main: src/index.js`,
 - Basic redaction: email → `[EMAIL]`; a token with an `sbp_` prefix →
   `<redacted>`; a card number → `[CARD]`.
   (Test values were placeholders / repeated filler characters, never real secrets.)
-- Test suite: `bun test test/` → **153 passed, 0 failed** (2 files).
+- Test suite: `bun test test/` → **156 passed, 0 failed** (2 files).
 
 ## Deno
 
@@ -35,7 +36,8 @@ landed. The package is CommonJS (`main: src/index.js`,
   fix with `SyntaxError: The requested module ... does not provide an export
   named 'redact'`.
 - Test suite: `deno test --allow-read --unstable-detect-cjs test/` →
-  **153 passed, 0 failed.**
+  **153 passed, 0 failed.** (Last checked 2026-11-26; the suite has since
+  grown to 156 tests, so a Deno re-check at 156 is pending.)
 
 ## Known gap (fixed by #76)
 
