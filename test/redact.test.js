@@ -1433,3 +1433,25 @@ test('leaves colon words that are not IPv6 addresses alone', () => {
 test('IPv4 redaction is unchanged', () => {
   assert.equal(redact('From 203.0.113.42 and 999.1.1.1'), 'From [IP] and 999.1.1.1');
 });
+
+// --- Issue #8: false-positive cases for phone vs order numbers ---
+
+test('order, invoice and tracking numbers that look numeric are not phones', () => {
+  // Number-like strings that must pass through redact() unchanged: they
+  // are order/invoice/tracking numbers, dates or quantities, not phone
+  // numbers. All values here are clearly fake.
+  assert.equal(redact('Order #12345 shipped today'), 'Order #12345 shipped today');
+  assert.equal(redact('Tracking 1Z999AA10123456784 in transit'), 'Tracking 1Z999AA10123456784 in transit');
+  assert.equal(redact('Tracking 12345678901234567890 delivered'), 'Tracking 12345678901234567890 delivered');
+  assert.equal(redact('Order 9876543210987654 processed'), 'Order 9876543210987654 processed');
+  assert.equal(redact('Ticket TKT-0042 assigned'), 'Ticket TKT-0042 assigned');
+  assert.equal(redact('Serial AB12-CD34-EF56 registered'), 'Serial AB12-CD34-EF56 registered');
+  assert.equal(redact('Delivery date 2026-11-28'), 'Delivery date 2026-11-28');
+  assert.equal(redact('Invoice dated 2026/11/28'), 'Invoice dated 2026/11/28');
+  assert.equal(redact('Qty 12-24 units in stock'), 'Qty 12-24 units in stock');
+  assert.equal(redact('SKU 123-456-789 in warehouse'), 'SKU 123-456-789 in warehouse');
+  assert.equal(redact('PO 20261128 received'), 'PO 20261128 received');
+  assert.equal(redact('Code 123 456 logged'), 'Code 123 456 logged');
+  // A real phone number still redacts, so the new cases pin the boundary.
+  assert.equal(redact('Call 555-123-4567'), 'Call [PHONE]');
+});
