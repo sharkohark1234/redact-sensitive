@@ -297,6 +297,14 @@ const PATTERNS = [
     regex: /\b(?:(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/g,
   },
   {
+    name: 'npmToken',
+    label: '[TOKEN]',
+    // npm access tokens: `npm_` followed by exactly 36 base64 characters.
+    // The trailing word boundary means a shorter body stays untouched and
+    // a longer run is not a token either (no partial match on 37 chars).
+    regex: /\bnpm_[A-Za-z0-9]{36}\b/g,
+  },
+  {
     name: 'gitlabToken',
     label: '[TOKEN]',
     // GitLab's default glpat- prefix followed by 20+ base64url characters.
