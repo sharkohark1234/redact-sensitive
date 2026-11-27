@@ -9,6 +9,9 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- IPv6 addresses (`2001:db8::1`, `::1`, `::ffff:192.0.2.1`) are now redacted
+  as `[IP]`
+  ([#14](https://github.com/sharkohark1234/redact-sensitive/issues/14)).
 - npm access tokens (`npm_…`) are now redacted as `[TOKEN]`
   ([#18](https://github.com/sharkohark1234/redact-sensitive/issues/18)).
 - Notion API tokens (`ntn_…`, `secret_…`) are now redacted as `[TOKEN]`
