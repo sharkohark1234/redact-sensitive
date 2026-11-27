@@ -5,6 +5,7 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 - Fixed Deno testing environment to support native type-checking. The Deno test command is now simply `deno test --allow-read --unstable-detect-cjs test/` without the `--no-check` flag.
+  ([#82](https://github.com/sharkohark1234/redact-sensitive/issues/82)).
 
 ### Added
 
@@ -15,7 +16,8 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Figma personal access tokens (`figd_…`) are now redacted as `[TOKEN]`
   ([#79](https://github.com/sharkohark1234/redact-sensitive/issues/79)).
 - Runtime compatibility note (`docs/compatibility.md`): verified under Node
-  (153 tests pass), Bun 1.4.4 (153 tests pass) and Deno 2.9.8
+  (156 tests pass), Bun 1.4.4 (156 tests pass) and Deno 2.9.8 (last
+  verified); re-checked 2026-11-27
   ([#58](https://github.com/sharkohark1234/redact-sensitive/issues/58)).
 - Anthropic API keys (`sk-ant-api03-…`, `sk-ant-admin01-…`) are now redacted
   as `[API_KEY]`
@@ -79,8 +81,10 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The TypeScript types test runs under Deno again: it moved from
   `test/types.test.ts` (CommonJS `require()`, which Deno cannot load from a
   `.ts` file) to `test/types.test.mts` with ESM imports, so `deno test
-  --allow-read --unstable-detect-cjs test/` passes 153/153 alongside
-  `npm test` and `bun test`.
+  --allow-read --unstable-detect-cjs test/` passes 153/153 (last verified
+  2026-11-26) alongside `npm test` and `bun test`, which now pass 156/156;
+  a Deno re-check at 156 is pending
+  ([#82](https://github.com/sharkohark1234/redact-sensitive/issues/82)).
 - Plain Deno import now works: `package.json` declares `"type": "commonjs"`,
   so Deno 2.9.8 detects the CommonJS module and
   `import { redact } from './src/index.js'` loads without the
