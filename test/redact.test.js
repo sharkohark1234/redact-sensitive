@@ -1148,6 +1148,44 @@ test('figmaToken honours pattern filters and labels', () => {
   assert.equal(redact(token, { keepLabels: false, replacement: '***' }), '***');
 });
 
+// --- Issue #18: npm access tokens (npm_...) ---
+
+// Placeholder assembled at runtime so no token-shaped literal is
+// committed: `npm_` followed by a 36-character body.
+const npmToken = () => `npm_${'a'.repeat(36)}`;
+
+test('redacts an npm access token as a token', () => {
+  const token = npmToken();
+  assert.equal(redact(`token ${token}`), 'token [TOKEN]');
+  assert.equal(redact(`//registry.npmjs.org/:_authToken=${token}`), '//registry.npmjs.org/:_authToken=[TOKEN]');
+  const found = findSensitive(`token ${token}`);
+  assert.ok(found.some((f) => f.type === 'npmToken' && f.value === token));
+});
+
+test('short npm_ strings and near misses stay untouched', () => {
+  for (const text of [
+    'npm_',
+    'npm_short',
+    'npm_...',
+    `npm_${'a'.repeat(35)}`,
+    // 37 characters: the trailing word boundary stops a partial match,
+    // so the whole overlong string stays untouched.
+    `npm_${'a'.repeat(37)}`,
+    'see npm_ in the docs',
+  ]) {
+    assert.equal(redact(text), text);
+    assert.deepEqual(findSensitive(text, { only: ['npmToken'] }), []);
+  }
+});
+
+test('npmToken honours pattern filters and labels', () => {
+  const token = npmToken();
+  assert.equal(redact(token, { except: ['npmToken'] }), token);
+  assert.equal(redact(token, { only: ['npmToken'] }), '[TOKEN]');
+  assert.equal(redact(token, { labels: { npmToken: '[NPM]' } }), '[NPM]');
+  assert.equal(redact(token, { keepLabels: false, replacement: '***' }), '***');
+});
+
 // Synthetic token bodies only; no live credentials are used in these tests.
 test('redacts GitLab access tokens, including full base64url bodies', () => {
   const bodies = ['a'.repeat(20), 'Ab0_'.repeat(5), 'Ab0-'.repeat(5), 'Ab0_-'.repeat(8)];
