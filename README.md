@@ -209,6 +209,7 @@ object has the same shape as the original.
 | SSN | `123-45-6789` → `[SSN]` |
 | Indian PAN | `ABCDE1234F` → `[PAN]` |
 | IPv4 | `203.0.113.42` → `[IP]` |
+| IPv6 | `2001:db8::1`, `::1`, `::ffff:192.0.2.1` → `[IP]` |
 | URL passwords | `https://user:pass@host` → `https://user:[PASSWORD]@host` |
 | Connection strings | `mongodb://user:pass@host`, `postgres://user:pass@host`, `redis://:pass@host` → password only → `[PASSWORD]` |
 | URL query-string secrets | `?token=abc123&user=ana` → `?token=[TOKEN]&user=ana` |
