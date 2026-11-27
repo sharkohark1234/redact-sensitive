@@ -1414,3 +1414,22 @@ test('redacts Shopify API access tokens and client secrets', () => {
     { type: 'shopifyToken', value: shpat, index: 4 },
   ]);
 });
+
+test('redacts full and compressed IPv6 addresses', () => {
+  assert.equal(redact('Connect to 2001:0db8:85a3:0000:0000:8a2e:0370:7334 now'), 'Connect to [IP] now');
+  assert.equal(redact('Connect to 2001:db8::1 now'), 'Connect to [IP] now');
+  assert.equal(redact('Connect to ::1 now'), 'Connect to [IP] now');
+  assert.equal(redact('Route fe80:: and ::ffff:192.0.2.1.'), 'Route [IP] and [IP].');
+});
+
+test('leaves colon words that are not IPv6 addresses alone', () => {
+  assert.equal(redact('Use std::vector and Foo::Bar'), 'Use std::vector and Foo::Bar');
+  assert.equal(redact('At 12:30:45 see note a:b:c'), 'At 12:30:45 see note a:b:c');
+  assert.equal(redact('Bad 1:2:3:4:5:6:7:8:9 and 1::2::3'), 'Bad 1:2:3:4:5:6:7:8:9 and 1::2::3');
+  assert.equal(redact('Not an address: ::'), 'Not an address: ::');
+  assert.equal(redact('Price 12.50:: total'), 'Price 12.50:: total');
+});
+
+test('IPv4 redaction is unchanged', () => {
+  assert.equal(redact('From 203.0.113.42 and 999.1.1.1'), 'From [IP] and 999.1.1.1');
+});
