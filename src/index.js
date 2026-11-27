@@ -427,6 +427,13 @@ const PATTERNS = [
     validate: (match) => match.replace(/\D/g, '').length >= 7,
   },
   {
+    name: 'shopifyToken',
+    label: '[TOKEN]',
+    // Shopify Admin API access tokens and app client secrets: the literal `shpat_`,
+    // `shppa_`, `shpca_`, or `shpss_` prefix followed by 32 lowercase hex characters.
+    regex: /\bshp(?:at|pa|ca|ss)_[a-f0-9]{32}\b/g,
+  },
+  {
     name: 'ipv4',
     label: '[IP]',
     regex: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g,
