@@ -1465,6 +1465,14 @@ test('dashed year ranges, order and invoice numbers are not phones', () => {
   assert.equal(redact('Order 123-4567 confirmed'), 'Order 123-4567 confirmed');
   assert.equal(redact('Invoice INV-2026-0042 paid'), 'Invoice INV-2026-0042 paid');
   assert.equal(redact('Batch 1234-5678 packed'), 'Batch 1234-5678 packed');
+  // Dashed serial numbers must pass through too: the phone pattern must
+  // not start matching in the middle of a digit-and-dash run.
+  assert.equal(redact('Serial 9876-5432-1098-7654 on file'), 'Serial 9876-5432-1098-7654 on file');
+  assert.equal(redact('Serial 1234-5678-9012 on file'), 'Serial 1234-5678-9012 on file');
+  assert.equal(redact('Serial 123456-789012 on file'), 'Serial 123456-789012 on file');
+  // A longer dashed run must pass through whole, not redact its first
+  // three groups as a phone.
+  assert.equal(redact('Ref 555-123-4567-8901 logged'), 'Ref 555-123-4567-8901 logged');
   // Real phone formats still redact, so the new cases pin the boundary.
   assert.equal(redact('Call +1 555-123-4567'), 'Call [PHONE]');
   assert.equal(redact('Call (555) 123-4567'), 'Call [PHONE]');
