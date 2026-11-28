@@ -456,7 +456,12 @@ const PATTERNS = [
     // or a country code plus a 4-5 digit pair — so bare 3-4 / 4-4 digit
     // runs like order numbers (123-4567), year ranges (2024-2027) and
     // invoice codes (INV-2026-0042, 1234-5678) are left alone (#87).
-    regex: /(?:\+\d{1,3}[\s-]?)?(?:\(\d{2,3}\)[\s-]?|\d{2,3}[\s-])\d{3,4}[\s-]\d{4}\b|(?:\+\d{1,3}[\s-]?)\d{4,5}[\s-]\d{4,5}\b/g,
+    // The lookbehind keeps a match from starting inside a digit-and-dash
+    // run, so dashed serials like 9876-5432-1098-7654 pass through too.
+    // The trailing guard keeps a match from ending mid-run, so a longer
+    // dashed number like 555-123-4567-8901 passes through whole instead
+    // of redacting its first three groups as a phone.
+    regex: /(?<![\d-])(?:(?:\+\d{1,3}[\s-]?)?(?:\(\d{2,3}\)[\s-]?|\d{2,3}[\s-])\d{3,4}[\s-]\d{4}\b|(?:\+\d{1,3}[\s-]?)\d{4,5}[\s-]\d{4,5}\b)(?!-\d)/g,
     validate: (match) => match.replace(/\D/g, '').length >= 7,
   },
   {
