@@ -451,8 +451,12 @@ const PATTERNS = [
   {
     name: 'phone',
     label: '[PHONE]',
-    // +1 555-123-4567, (555) 123-4567, 555-123-4567, +91 98765 43210
-    regex: /(?:\+\d{1,3}[\s-]?)?(?:\(\d{2,4}\)[\s-]?|\d{2,4}[\s-])?\d{3,4}[\s-]\d{4}\b/g,
+    // +1 555-123-4567, (555) 123-4567, 555-123-4567, +91 98765 43210.
+    // A phone needs an area code plus two more digit groups (9+ digits),
+    // or a country code plus a 4-5 digit pair — so bare 3-4 / 4-4 digit
+    // runs like order numbers (123-4567), year ranges (2024-2027) and
+    // invoice codes (INV-2026-0042, 1234-5678) are left alone (#87).
+    regex: /(?:\+\d{1,3}[\s-]?)?(?:\(\d{2,3}\)[\s-]?|\d{2,3}[\s-])\d{3,4}[\s-]\d{4}\b|(?:\+\d{1,3}[\s-]?)\d{4,5}[\s-]\d{4,5}\b/g,
     validate: (match) => match.replace(/\D/g, '').length >= 7,
   },
   {
