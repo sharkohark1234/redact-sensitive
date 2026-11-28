@@ -223,7 +223,7 @@ Secrets in a URL query string are redacted only when the parameter name is a kno
 
 Session cookie values are redacted only when the cookie name is a known session name (`session`, `sessionid`, `sessiontoken`, `sid`, `auth`, `token`, `access_token`, `refresh_token`, `id_token`, with `_`/`-`/camelCase variants) in `Cookie` and `Set-Cookie` headers. Cookie names, harmless cookies and `Set-Cookie` attributes (`HttpOnly`, `Path`, `Expires`, …) are left alone, as are similar-looking names such as `mysession`.
 
-Credit cards are only redacted when they pass the Luhn check, so a random 16-digit order number is left alone. Phone numbers need at least 7 digits. Indian PAN numbers are matched in their five-letter, four-digit, one-letter form.
+Credit cards are only redacted when they pass the Luhn check, so a random 16-digit order number is left alone. Phone numbers need at least 7 digits and an area code or country code, so bare dashed digit runs — order, invoice, ticket and batch numbers, year ranges and serial numbers — pass through unchanged, while real phone numbers are redacted. Indian PAN numbers are matched in their five-letter, four-digit, one-letter form.
 
 ## What this is not
 
