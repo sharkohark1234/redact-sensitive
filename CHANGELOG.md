@@ -81,6 +81,12 @@ based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- The phone pattern no longer redacts dashed serial numbers (for example
+  `9876-5432-1098-7654`) as `[PHONE]`: a match can no longer start inside
+  a digit-and-dash run, nor end in the middle of one (so a longer dashed
+  number like `555-123-4567-8901` passes through whole), so serial, order
+  and invoice numbers pass through unchanged
+  ([#87](https://github.com/sharkohark1234/redact-sensitive/issues/87)).
 - The TypeScript types test runs under Deno again: it moved from
   `test/types.test.ts` (CommonJS `require()`, which Deno cannot load from a
   `.ts` file) to `test/types.test.mts` with ESM imports, so `deno test
