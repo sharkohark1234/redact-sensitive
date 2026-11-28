@@ -1455,3 +1455,22 @@ test('order, invoice and tracking numbers that look numeric are not phones', () 
   // A real phone number still redacts, so the new cases pin the boundary.
   assert.equal(redact('Call 555-123-4567'), 'Call [PHONE]');
 });
+
+// --- Issue #87: phone pattern redacts dashed non-phone numbers ---
+
+test('dashed year ranges, order and invoice numbers are not phones', () => {
+  // Bare 3-4 / 4-4 digit runs are order, invoice, batch or year-range
+  // numbers, not phones — they must pass through unchanged.
+  assert.equal(redact('Range 2024-2027 sales'), 'Range 2024-2027 sales');
+  assert.equal(redact('Order 123-4567 confirmed'), 'Order 123-4567 confirmed');
+  assert.equal(redact('Invoice INV-2026-0042 paid'), 'Invoice INV-2026-0042 paid');
+  assert.equal(redact('Batch 1234-5678 packed'), 'Batch 1234-5678 packed');
+  // Real phone formats still redact, so the new cases pin the boundary.
+  assert.equal(redact('Call +1 555-123-4567'), 'Call [PHONE]');
+  assert.equal(redact('Call (555) 123-4567'), 'Call [PHONE]');
+  assert.equal(redact('Call 555-123-4567'), 'Call [PHONE]');
+  assert.equal(redact('Call +91 98765 43210'), 'Call [PHONE]');
+  // UK numbers have a 2-digit area code, so they must redact too.
+  assert.equal(redact('Call +44 20 7946 0958'), 'Call [PHONE]');
+  assert.equal(redact('Call 020 7946 0958'), 'Call [PHONE]');
+});
